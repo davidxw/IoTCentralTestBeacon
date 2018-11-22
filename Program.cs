@@ -11,9 +11,12 @@ namespace IoTCentralTestBeacon
 {
     class Program
     {
-        //static string DeviceConnectionString = "HostName=saas-iothub-69ec5798-e8bd-4978-bb95-617bd8d6215b.azure-devices.net;DeviceId=a782b00e-c332-4de0-a9ad-135ab777e057;SharedAccessKey=hRFNzPsrcj8Wb0TG14SaUJVSQDe5rFEQuevuVLvwpE4=";
         // this is a PER DEVICE connection string - if you want to connect a second device then I can generate a second string
-        static string DeviceConnectionString = "HostName=saas-iothub-69ec5798-e8bd-4978-bb95-617bd8d6215b.azure-devices.net;DeviceId=15842b1e-a8d7-4555-b678-e18c0a77e436;SharedAccessKey=brMCxqLb2yc1AQKISEXiQgmx0x+BOwXlF3Mo8zHcBNI=";
+        static string DeviceConnectionString = "HostName=saas-iothub-69ec5798-e8bd-4978-bb95-617bd8d6215b.azure-devices.net;DeviceId=d23c7ff6-42d7-4305-992a-5a89b4d818ac;SharedAccessKey=JD118UGsMa461oK0VVxG/zRC5bzPdfx5rzxo5cKISOM=";
+        
+        //static string DeviceConnectionString = "HostName=saas-iothub-69ec5798-e8bd-4978-bb95-617bd8d6215b.azure-devices.net;DeviceId=15842b1e-a8d7-4555-b678-e18c0a77e436;SharedAccessKey=brMCxqLb2yc1AQKISEXiQgmx0x+BOwXlF3Mo8zHcBNI=";
+        //static string DeviceConnectionString = "HostName=saas-iothub-69ec5798-e8bd-4978-bb95-617bd8d6215b.azure-devices.net;DeviceId=a782b00e-c332-4de0-a9ad-135ab777e057;SharedAccessKey=hRFNzPsrcj8Wb0TG14SaUJVSQDe5rFEQuevuVLvwpE4=";
+        
         static DeviceClient Client = null;
         static CancellationTokenSource cts;
         private static double currentBatteryLevel = 0.0;
@@ -46,7 +49,7 @@ namespace IoTCentralTestBeacon
         {
             try
             {
-                Console.WriteLine("Connecting to hub");
+                Console.WriteLine($"Connecting to hub with connection string {DeviceConnectionString}");
                 Client = DeviceClient.CreateFromConnectionString(DeviceConnectionString, TransportType.Mqtt);
             }
             catch (Exception ex)
@@ -60,12 +63,12 @@ namespace IoTCentralTestBeacon
         {
             try
             {
-                Console.WriteLine("Sending device properties:");
+                Console.Write($"{DateTime.Now} > Sending device properties: ");
                 
                 TwinCollection reportedProperties = new TwinCollection();
                
-                reportedProperties["bluetoothAddress"] = "sampleAddress"; //text
-                reportedProperties["beaconType"] = "sampleType"; //text
+                reportedProperties["bluetoothAddress"] = "DESKTOP-531NK3L"; //text
+                reportedProperties["beaconType"] = "00"; //text
                 reportedProperties["rssi"] = "rrrr"; //text
                 reportedProperties["uuid"] = "uuuuu"; //text
 
@@ -115,7 +118,7 @@ namespace IoTCentralTestBeacon
 
         private static double getNextBatteryLevel()
         {
-            currentBatteryLevel -= batteryDecrement;
+            currentBatteryLevel -= batteryDecrement + new Random().NextDouble();
 
             if (currentBatteryLevel <= 0.0)
                 currentBatteryLevel = maxBatteyLevel;
